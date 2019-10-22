@@ -33,19 +33,23 @@ var stringifyJSON = function(obj) {
     return `[${resArr}]`;
   } else if (!Array.isArray(obj) && (typeof obj === 'object')) {
     var keys = Object.keys(obj);
-    var resObj = {};
+    var resObj = "";
+    var lastKey = keys[keys.length - 1];
     if (Object.keys(obj).length === 0) {
-      return "{}"
+      return "{}";
     } else {
-    //   for (var key of keys) {
-    //     resObj[(key)] = stringifyJSON(obj[key]);
-    //     // access key & value
-    //     // convert key & value into string using stringifyJSON
-    //     // result: "key" : "value"
-    //   }
-    // }
-    // console.log(`"${resObj}"`)
-    return `"{${resObj}}"`
+      for (let key in obj) {
+        if (typeof obj[key] === 'function' || typeof obj[key] === 'undefined') {
+          return "{}";
+        } else if (key === lastKey) {
+          let pair = stringifyJSON(key) + ":" + stringifyJSON(obj[key]);
+          resObj += pair;
+        } else {
+          let pair = stringifyJSON(key) + ":" + stringifyJSON(obj[key]) + ",";
+          resObj += pair;
+        }
+      }
+      return "{" + resObj + "}";
     }
   } else {
     return "" + obj;
